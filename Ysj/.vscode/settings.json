@@ -1,0 +1,7 @@
+{
+    "pythonPreview.code.fontFamily": "Consolas, 'Courier New', monospace",
+    "pythonPreview.codeFooterDocs.fontFamily": "Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "Consolas",
+    "pythonPreview.stackAndHeapHeader.fontFamily": "verdana, arial, helvetica, sans-serif",
+    "editor.fontLigatures":true 
+}
