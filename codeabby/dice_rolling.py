@@ -1,6 +1,5 @@
 import math
 
-
 def roll_dice(value):
     face = math.floor(value * 6) + 1
     return face
