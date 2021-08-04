@@ -9,6 +9,7 @@ def count(list_of_num, num):
 
 if __name__ == "__main__":
 
+
     amount, range_of_num = [int(x) for x in input().split()]
 
     data = [int(x) for x in input().split()]

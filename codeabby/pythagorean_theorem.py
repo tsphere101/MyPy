@@ -16,10 +16,6 @@ import math
 
 if __name__ == "__main__":
 
-    print(f"Pi is equal to {(10/3):.3f}")
-
-
-     
     result = []
     for _ in range(int(input())) :
         sides_length = [float(x) for x in input().split()]

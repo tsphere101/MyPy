@@ -233,8 +233,6 @@ class LinkedList:
 if __name__ == '__main__':
     x = LinkedList(1, 2, 3, 4, 5, 6, 7, 8, 9)
     y = LinkedList(65, 42, 18, 50, 22, 54)
-    mylist = [100, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6]
-
     # for i in range(20):
         # x.append(39)
 

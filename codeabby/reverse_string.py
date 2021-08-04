@@ -9,7 +9,7 @@ def reverse_me(string):
 
 
 def reverse_me2(string):
-    return string[-1::-1]
+    return string[::-1]
 
 
 if __name__ == '__main__':
