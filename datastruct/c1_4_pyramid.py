@@ -1,7 +1,7 @@
 
 print("*** Fun with Drawing ***")
 n = int(input("Enter input : "))
-width = 4*(n-1)+1
+width = 4*n-3
 for i in range(width):
     for j in range(width):
         if i == 0 or i == width-1:
