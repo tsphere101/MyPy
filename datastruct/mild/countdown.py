@@ -30,6 +30,8 @@ if __name__ == '__main__':
 
         list_of_result[i].reverse()
 
-    list_of_result.insert(0,len(list_of_result))
+    anslistlast = [] 
+    anslistlast.append(len(list_of_result))
+    anslistlast.append(list_of_result)
 
-    print(list_of_result)
+    print(anslistlast)
