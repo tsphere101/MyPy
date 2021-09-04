@@ -1,4 +1,3 @@
-
 class Node:
     def __init__(self, data=None, next=None) -> None:
         self.data = data
@@ -42,7 +41,7 @@ class LinkedList:
     def print_nodes(self):
         cur = self.head
         for _ in range(len(self)+1):
-            print(str(cur),f"Data:{cur.data}",f"NextNode:{cur.next}")
+            print(str(cur), f"Data:{cur.data}", f"NextNode:{cur.next}")
             cur = cur.next
 
     def get(self, index):
@@ -75,14 +74,14 @@ class LinkedList:
 
     def remove(self, data):
         cur = self.head
-        for i,d in enumerate(self):
+        for i, d in enumerate(self):
             if cur.next.data == data:
                 cur.next = cur.next.next
                 self.size -= 1
             cur = cur.next
         return data
 
-    def removeAll(self,data):
+    def removeAll(self, data):
         prev = self.head
         for d in self:
             if d == data:
@@ -194,9 +193,17 @@ class LinkedList:
         return str(data)
 
     def __getitem__(self, index):
+        while index < 0:
+            index += self.size
+        if index >= self.size:
+            raise IndexError
         return self.get(index)
 
     def __setitem__(self, index, data):
+        while index < 0:
+            index += self.size
+        if index >= self.size:
+            raise IndexError
         self.set(index, data)
 
     def __eq__(self, o: object) -> bool:
@@ -217,18 +224,81 @@ class LinkedList:
         while cur.next != None:
             cur = cur.next
             yield cur.data
-    
-    def __contains__(self,data):
+
+    def __contains__(self, data):
         return self.contains(data)
 
 
-if __name__ == '__main__':
-    x = LinkedList(1, 2, 3, 4, 5, 6, 7, 8, 9)
-    y = LinkedList(65, 42, 18, 50, 22, 54)
-    # for i in range(20):
-        # x.append(39)
+class Queue(LinkedList):
 
-    # print(x)
+    def front(self):
+        return self[0]
 
-    x.print_elems()
-    x.print_nodes()
+    def rear(self):
+        return self[-1]
+
+    def head(self):
+        return self[0]
+
+    def tail(self):
+        return self[-1]
+
+    def enqueue(self, data):
+        self.append(data)
+
+    def dequeue(self):
+        return self.pop(0)
+
+
+if __name__ == "__main__":
+    # Enter Input : 0:0 2:0,1:3 3:3,2:1 2:1
+    # My   Queue = 0:0, 1:3, 2:1
+    # Your Queue = 2:0, 3:3, 2:1
+    # My   Activity:Location = Eat:Res., Game:Home, Learn:ClassR.
+    # Your Activity:Location = Learn:Res., Movie:Home, Learn:ClassR.
+    # Yes! You're my love! : Score is 8.
+    days = input("Enter Input : ").split(",")
+    
+    my_queue = Queue()
+    your_queue = Queue()
+    activity_dict = {"0":"Eat","1":"Game","2":"Learn","3":"Movie"}
+    location_dict = {"0":"Res.","1":"ClassR.","2":"SuperM.","3":"Home"}
+    score_lookup = {"7+":"Yes! You're my love!","7-":"Umm.. It's complicated relationship!","0":"No! We're just friends."}
+    score = 0
+
+    for day in days:
+        # activity
+        me= day.split(" ")[0]
+        my_activity = me.split(":")[0]
+        my_location = me.split(":")[1]
+
+        # you
+        you = day.split(" ")[1]
+        u_activity = you.split(":")[0]
+        u_location = you.split(":")[1]
+
+        my_queue.enqueue(me)
+        your_queue.enqueue(you)
+
+        if (my_activity == u_activity) and (my_location != u_location):
+            score +=1
+        elif (my_location == u_location) and (my_activity != u_activity):
+            score +=2
+        elif (my_activity == u_activity) and (my_location == u_location):
+            score +=4
+        else :
+            score -=5
+
+    print("My   Queue =", ", ".join(day for day in my_queue))
+    print("Your Queue =", ", ".join(day for day in your_queue))
+    print("My   Activity:Location =", ", ".join(str(activity_dict[day[0]]+":"+location_dict[day[2]]) for day in my_queue )) 
+    print("Your Activity:Location =", ", ".join(str(activity_dict[day[0]]+":"+location_dict[day[2]]) for day in your_queue)) 
+
+
+
+    if score >=7 :
+        print(score_lookup["7+"] + f" : Score is {score}.")
+    elif score < 7 and score > 0 :
+        print(score_lookup["7-"] + f" : Score is {score}.")
+    else : 
+        print(score_lookup["0"] + f" : Score is {score}.")

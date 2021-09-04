@@ -1,4 +1,3 @@
-
 class Node:
     def __init__(self, data=None, next=None) -> None:
         self.data = data
@@ -42,7 +41,7 @@ class LinkedList:
     def print_nodes(self):
         cur = self.head
         for _ in range(len(self)+1):
-            print(str(cur),f"Data:{cur.data}",f"NextNode:{cur.next}")
+            print(str(cur), f"Data:{cur.data}", f"NextNode:{cur.next}")
             cur = cur.next
 
     def get(self, index):
@@ -75,14 +74,14 @@ class LinkedList:
 
     def remove(self, data):
         cur = self.head
-        for i,d in enumerate(self):
+        for i, d in enumerate(self):
             if cur.next.data == data:
                 cur.next = cur.next.next
                 self.size -= 1
             cur = cur.next
         return data
 
-    def removeAll(self,data):
+    def removeAll(self, data):
         prev = self.head
         for d in self:
             if d == data:
@@ -194,9 +193,17 @@ class LinkedList:
         return str(data)
 
     def __getitem__(self, index):
+        while index < 0:
+            index += self.size
+        if index >= self.size:
+            raise IndexError
         return self.get(index)
 
     def __setitem__(self, index, data):
+        while index < 0:
+            index += self.size
+        if index >= self.size:
+            raise IndexError
         self.set(index, data)
 
     def __eq__(self, o: object) -> bool:
@@ -217,18 +224,54 @@ class LinkedList:
         while cur.next != None:
             cur = cur.next
             yield cur.data
-    
-    def __contains__(self,data):
+
+    def __contains__(self, data):
         return self.contains(data)
 
 
-if __name__ == '__main__':
-    x = LinkedList(1, 2, 3, 4, 5, 6, 7, 8, 9)
-    y = LinkedList(65, 42, 18, 50, 22, 54)
-    # for i in range(20):
-        # x.append(39)
+class Queue(LinkedList):
 
-    # print(x)
+    def front(self):
+        return self[0]
 
-    x.print_elems()
-    x.print_nodes()
+    def rear(self):
+        return self[-1]
+
+    def head(self):
+        return self[0]
+
+    def tail(self):
+        return self[-1]
+
+    def enqueue(self, data):
+        self.append(data)
+
+    def dequeue(self):
+        return self.pop(0)
+
+
+if __name__ == "__main__":
+
+    input_command = input("Enter Input : ").split(",")
+    queue = Queue()
+
+    for each in input_command:
+        command = each.split()[0]
+        try:
+            arg = int(each.split()[1])
+        except:
+            arg = None
+
+        if command.upper() == "E":
+            queue.enqueue(arg)
+            print(len(queue))
+        elif command.upper() == "D":
+            if queue.is_empty():
+                print(-1)
+            else:
+                print(queue.dequeue(), "0")
+
+    if queue.is_empty():
+        print("Empty")
+    else:
+        print(" ".join(str(data) for data in queue))
