@@ -98,7 +98,7 @@ class DoublyLinkedList:
             cur = cur.next
         raise ValueError(f"{data} is not in list.")
 
-    def removeAll(self, data):
+    def remove_all(self, data):
         """Remove all occurrences of the data in the list.
 
         Args:
@@ -356,7 +356,7 @@ class SinglyLinkedList:
 
         raise ValueError(f"{data} is not in list.")
 
-    def removeAll(self, data):
+    def remove_all(self, data):
         """Remove all occurrences of the data in the list.
 
         Args:
