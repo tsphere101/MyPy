@@ -1,3 +1,4 @@
+
 class Node:
     def __init__(self, data=None, next=None) -> None:
         self.data = data
@@ -275,58 +276,30 @@ def exploding(string):
                 residue.enqueue(tray.dequeue())
     residue.extend(tray)
 
+    combo = 0
     # calling recursion
     if len(explodes_position) > 0:
         recur = exploding(residue)
         residue = recur[0]
         explodes_position.extend(recur[1])
         explodes_color.extend(recur[2])
+        combo = len(recur[1])
 
-    return residue, explodes_position, explodes_color
+    return residue, explodes_position, explodes_color, combo
 
 
 if __name__ == "__main__":
 
-    inp = input("Enter Input (Normal, Mirror) : ")
-    normal, mirror = inp.split()
+    input_data = "".join(input("Enter Input : ").split())
 
-    mirror = mirror[::-1]
-    mir_res, mir_ex_pos, mir_obs = exploding(mirror)
+    explode = exploding(input_data)
+    residue, ex_pos, ex_color, combo = explode
 
-    nor_ex_pos = exploding(normal)[1]
-
-    interrupt_failed = 0
-    nor_with_obsted = Queue()
-    for i in range(len(normal)):
-        nor_with_obsted.enqueue(normal[i])
-        if nor_ex_pos.is_not_empty() and mir_obs.is_not_empty():
-            if i == nor_ex_pos.front():
-                # Interrupting
-                if normal[i] == mir_obs.front():
-                    interrupt_failed += 1
-                nor_with_obsted.enqueue(mir_obs.dequeue())
-                nor_ex_pos.dequeue()
-
-    nor_res_after_obsted, nor_ex_pos_after_obsted, nor_ex_color_after_obsted = exploding(
-        nor_with_obsted)
-
-    ### DISPLAY ###
-
-    print("NORMAL :")
-    print(len(nor_res_after_obsted))
-    if nor_res_after_obsted.is_not_empty():
-        print("".join(nor_res_after_obsted.reverse()))
-    else:
+    print(len(residue))
+    if len(residue) > 0:
+        print("".join(residue.reverse()))
+    else :
         print("Empty")
-    print(len(nor_ex_pos_after_obsted) -
-          interrupt_failed, "Explosive(s) ! ! ! (NORMAL)")
-    if interrupt_failed > 0:
-        print(f"Failed Interrupted {interrupt_failed} Bomb(s)")
-    print("------------MIRROR------------")
-    print(": RORRIM")
-    print(len(mir_res))
-    if mir_res.is_not_empty():
-        print("".join(mir_res.reverse()))
-    else:
-        print("ytpmE")
-    print("(RORRIM) ! ! ! (s)evisolpxE", len(mir_ex_pos))
+
+    if combo > 0:
+        print(f"Combo : {len(ex_pos)} ! ! !")
