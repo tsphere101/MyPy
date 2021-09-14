@@ -281,6 +281,8 @@ class SinglyLinkedList:
                 self.append(data)
 
     def node_at(self, index):
+        if index == len(self) - 1:
+            return self.tail.prev
         cur = self.head
         for _ in range(index+1):
             cur = cur.next
