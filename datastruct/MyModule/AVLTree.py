@@ -1,3 +1,4 @@
+
 class NodeAVL:
     def __init__(self, data):
         self.data = [data]
@@ -124,14 +125,12 @@ class AVLTree:
     def draw_tree(self):
         self.root.printHelper(self.root, "", True)
 
+from betsybaileyy_AVLTree import AVLTree as Avl
 
 if __name__ == "__main__":
-    a = AVLTree()
+    a = Avl()
 
-    for i in range(6):
-        a.append(i)
+    for i in range(50):
+        a.insert(i)
+    a.items_in_order()
 
-    print(a)
-    print("Height of the tree is :", a.root.get_height())
-    print("Balance of the tree is :", a.root.get_balance_factor())
-    # a.draw_tree()
