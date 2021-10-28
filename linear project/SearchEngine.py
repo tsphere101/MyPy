@@ -4,11 +4,11 @@ import re
 import json
 import nltk
 import math
+nltk.download('wordnet')
 
 
 class SearchEngine:
     except_words = set(['is', 'am', 'are', 'was', 'were', 'been', 'be'])
-    nltk.download('wordnet')
 
     def __init__(self, docs_path=None):
         self.lemma = stem.WordNetLemmatizer()
@@ -18,6 +18,8 @@ class SearchEngine:
         self.create_words_dimension()
 
         self.parse_docs_to_vector()
+
+        self.spell = SpellCorrection(set(self.words_dimension.keys()))
 
     def read_from_file(self, path):
         # Read zen_record from file
@@ -53,6 +55,7 @@ class SearchEngine:
         # Parse sentence to vector
         words_from_sentence = self.parse_words(sentence)
         if words_dimension is None:
+            # the sentence does not math in any word dimension.
             sentence_vector = dict.fromkeys(self.words_dimension, 0)
             for word in words_from_sentence:
                 try:
@@ -61,12 +64,15 @@ class SearchEngine:
                     # Key Error occure -> there is a word that does not involve in the dimension
                     # Do a 2nd step deep search.
                     # Or do the word correction.
-                    if word not in self.DICTIONARY:
+                    if word not in self.spell.DICTIONARY:
 
-                        # similar_word = spell_correction(word)[0][2]
+                        
 
                         # print("Showing result for", similar_word)
                         pass
+            if sum(sentence_vector.values()) == 0:
+                # does not math any words in docs.
+                return None
 
         else:
             sentence_vector = dict.fromkeys(words_dimension, 0)
@@ -109,6 +115,10 @@ class SearchEngine:
 
     def _perform_search(self, search_kw) -> dict:
         search_kw = self.parse_sentence_vector(search_kw)
+        if search_kw == None:
+            # search_kw does not match any result
+            return None
+
         result = dict()
 
         for i in range(len(self.parsed_doc)):
@@ -130,6 +140,9 @@ class SearchEngine:
             number_of_result = 10
 
         r = self._perform_search(keyword)
+        if r is None:
+          # Keyword does not math any result
+          return None
         result = []
         n = 0
         for data in r:
@@ -171,15 +184,27 @@ def parse_alphabet_vector(word) -> dict:
 
 
 class SpellCorrection:
-    def __init__(self, dictionary_path=None):
-        if dictionary_path is not None:
-            self.read_dictionary(dictionary_path)
+    def __init__(self,iterable=None, **kw):
+        if iterable == None:
+          try :
+            dictionary_path = kw['dictionary_path']
+            if dictionary_path is not None:
+                self.read_dictionary(dictionary_path)
+          except:
+            pass
+        else :
+          self._create_DICTIONARY(iterable)
+          
+
 
     def read_dictionary(self, path):
         with open(path, 'r') as file:
             content = file.read()
-            self.DICTIONARY = dict.fromkeys(clean_non_alpha(
-                word.lower()) for word in content.splitlines())
+            self._create_DICTIONARY(content)
+
+
+    def _create_DICTIONARY(self,iterable):
+        self.DICTIONARY = dict.fromkeys(clean_non_alpha(word.lower()) for word in iterable)
 
         self.words_alphabet_dimension = {k: v for k, v in zip(
             self.DICTIONARY, [parse_alphabet_vector(a) for a in self.DICTIONARY])}
@@ -234,9 +259,14 @@ class SpellCorrection:
 
 
 if __name__ == "__main__":
+
     se = SearchEngine("zen_record.txt")
-    sp = SpellCorrection("dictionary.txt")
+    sp = SpellCorrection(dictionary_path="dictionary.txt")
+
     kw = input()
-    x = se.search_by_keyword(keyword=kw, return_value ='Quote',number_of_result =5)
-    for data in x:
-        print(data)
+    x = se.search_by_keyword(keyword=kw, return_value ='Quote',number_of_result = 20)
+    if x:
+        for i,data in enumerate(x):
+            print(i+1,data.replace(kw,"'"+kw+"'"))
+    else :
+        print('DOES NOT MATH ANY WORDS.')
