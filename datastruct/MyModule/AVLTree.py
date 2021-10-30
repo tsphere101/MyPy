@@ -43,17 +43,31 @@ class AVL:
 
     def _rebalance(self, node):
         bf = self.balance_factor(node)
-        if bf <= -2:
-            # Right heavy
-            return self.rotate_left(node)
 
-        elif bf >= 2:
-            # Left heavy
-            return self.rotate_right(node)
+        # Left heavy tree
+        if bf > 1:
+            if node.left:
+                if self.balance_factor(node.left) > 0:
+                    # Left Left case; Perform Right rotate to fix it.
+                    return self.rotate_right(node)
+                elif self.balance_factor(node.left) < 0:
+                    # Left Right case; Perform Left rotate then Right rotate to fix it.
+                    node.left = self.rotate_left(node.left)
+                    return self.rotate_right(node)
 
-        else:
-            return node
+        # Right heavy tree
+        if bf < -1:
+            if node.right:
+                if self.balance_factor(node.right) < 0:
+                    # Right Right case; Perform Left ritate to fix it.
+                    return self.rotate_left(node)
+                elif self.balance_factor(node.right) > 0:
+                    # Right Left case; Perform Right rotate then Left rotate to fix it.
+                    node.right = self.rotate_right(node.right)
+                    return self.rotate_left(node)
 
+        return node            
+        
     def rotate_left(self, x):
         # prep
         y = x.right
@@ -234,19 +248,7 @@ class AVL:
         self._printTree(self.root)
 
 if __name__ == "__main__":
-    t = AVL()
-    t.insert(16)
-    t.insert(8)
-    t.insert(25)
-    t.insert(18)
-    t.insert(52)
-
-    # for i in range(31):
-    #     t.insert(i)
-
-    t.print_tree()
-
-    print(t.in_order_traversal())
-    print("tree height",t.height())
-    print("Balance factor of root",t.balance_factor(t.root))
-    print("len",len(t))
+    
+    myTree = AVL() 
+    
+    myTree.print_tree()
