@@ -66,8 +66,6 @@ class SearchEngine:
                     # Or do the word correction.
                     if word not in self.spell.DICTIONARY:
 
-                        
-
                         # print("Showing result for", similar_word)
                         pass
             if sum(sentence_vector.values()) == 0:
@@ -113,10 +111,24 @@ class SearchEngine:
         self.parsed_doc = result
         return result
 
+    def re_correction_sentence(self,sentence):
+        sentence = self.parse_words(sentence)
+        result = []
+        for word in sentence:
+            if word not in self.words_dimension:
+                correct_word = self.spell.spell_correction(word)
+                result.append(correct_word)
+            else:
+                result.append(word)
+        
+        return " ".join(result)
+
+
     def _perform_search(self, search_kw) -> dict:
         search_kw = self.parse_sentence_vector(search_kw)
         if search_kw == None:
             # search_kw does not match any result
+
             return None
 
         result = dict()
@@ -141,8 +153,12 @@ class SearchEngine:
 
         r = self._perform_search(keyword)
         if r is None:
-          # Keyword does not math any result
-          return None
+            # Keyword does not math any result
+            re_corrected_keyword = self.re_correction_sentence(keyword)
+            r = self._perform_search(re_corrected_keyword)
+            print(f"No result for {keyword}")
+            print(f"Showing result of '{re_corrected_keyword}'")
+
         result = []
         n = 0
         for data in r:
@@ -179,38 +195,36 @@ def parse_alphabet_vector(word) -> dict:
     A_Z = 'abcdefghijklmnopqrstuvwxyz'
     word_vector = dict.fromkeys(A_Z, 0)
     for c in word:
-        word_vector[c] += 1
+        try:
+            word_vector[c] += 1
+        except:
+            print("Warning Error occured while parsing to alphabet vector.")
     return word_vector
 
 
 class SpellCorrection:
-    def __init__(self,iterable=None, **kw):
-        if iterable == None:
-          try :
-            dictionary_path = kw['dictionary_path']
-            if dictionary_path is not None:
-                self.read_dictionary(dictionary_path)
-          except:
-            pass
-        else :
-          self._create_DICTIONARY(iterable)
-          
-
+    def __init__(self, iterable=None, **kw):
+        if iterable is None:
+            dp = kw['dictionary_path']
+            if dp is not None:
+                self.read_dictionary(dp)
+        else:
+            self._create_DICTIONARY(iterable)
 
     def read_dictionary(self, path):
         with open(path, 'r') as file:
             content = file.read()
-            self._create_DICTIONARY(content)
+            self._create_DICTIONARY(content.splitlines())
 
+    def _create_DICTIONARY(self, iterable):
+        self.DICTIONARY = dict.fromkeys(
+            clean_non_alpha(word.lower()) for word in iterable)
 
-    def _create_DICTIONARY(self,iterable):
-        self.DICTIONARY = dict.fromkeys(clean_non_alpha(word.lower()) for word in iterable)
-
-        self.words_alphabet_dimension = {k: v for k, v in zip(
-            self.DICTIONARY, [parse_alphabet_vector(a) for a in self.DICTIONARY])}
+        self.words_alphabet_dimension = {k: v for k, v in zip(self.DICTIONARY, [parse_alphabet_vector(a) for a in self.DICTIONARY])}
 
         for word in self.words_alphabet_dimension:
             self.words_alphabet_dimension[word] = parse_alphabet_vector(word)
+
 
     def spell_correction(self, word) -> list:
         word_vec = parse_alphabet_vector(word)
@@ -253,6 +267,7 @@ class SpellCorrection:
         # denominator
         sq_sig = math.sqrt(sum((a_i-a_mean)**2 for a_i in a) *
                            sum((b_i - b_mean)**2 for b_i in b))
+
         pearson_result = sum_cov/sq_sig
 
         return pearson_result
@@ -261,12 +276,11 @@ class SpellCorrection:
 if __name__ == "__main__":
 
     se = SearchEngine("zen_record.txt")
-    sp = SpellCorrection(dictionary_path="dictionary.txt")
+    # print(se.spell.spell_correction("bird"))
+    # sp = SpellCorrection(None, dictionary_path="dictionary.txt")
+    # print(sp.spell_correction('ola'))
 
-    kw = input()
+    kw = input("Enter search keywords : ")
     x = se.search_by_keyword(keyword=kw, return_value ='Quote',number_of_result = 20)
-    if x:
-        for i,data in enumerate(x):
-            print(i+1,data.replace(kw,"'"+kw+"'"))
-    else :
-        print('DOES NOT MATH ANY WORDS.')
+    for i,data in enumerate(x):
+        print(i+1,data.replace(kw,"'"+kw+"'"))
