@@ -7,20 +7,6 @@ class Node:
     def __str__(self):
         return str(self.data)
 
-    # def insert(self, data):
-    #     if data < self.data:
-    #         if self.left is not None:
-    #             return self.left.insert(data)
-    #         else:
-    #             self.left = Node(data)
-    #             return self.left
-    #     else:
-    #         if self.right is not None:
-    #             return self.right.insert(data)
-    #         else:
-    #             self.right = Node(data)
-    #             return self.left
-
     def find_max(self):
         if self.right:
             return self.right.find_max()
@@ -38,26 +24,29 @@ class BST:
     def __init__(self):
         self.root = None
 
-    def insert(self, data, node=None):
+    def insert(self,data):
         if not self.root:
             self.root = Node(data)
-            return
+        else:
+            self._insert(data,self.root)
 
+    def _insert(self,data,node):
         if node is None:
-            node = self.root
-
+            return
+        
         if data < node.data:
             if node.left:
-                self.insert(data, node.left)
+                self._insert(data,node.left)
             else:
                 node.left = Node(data)
+        
         elif data > node.data:
             if node.right:
-                self.insert(data, node.right)
+                self._insert(data,node.right)
             else:
                 node.right = Node(data)
 
-        return
+    
 
     def find_max(self, node=None):
         if self.root is None:
@@ -148,6 +137,7 @@ class BST:
                     succ = p
                     p = p.left
                 else:
+                    # equal case ( the node that called )
                     break
 
             return succ
@@ -224,16 +214,11 @@ class BST:
 
 if __name__ == "__main__":
 
-    # t = BST()
-    # t.insert(3)
-    # t.insert(2)
-    # t.insert(1)
-    # t.insert(12)
-    # t.printTree(t.root)
 
     inp = input("Enter Input : ").split(',')
     t = BST()
     for data in inp:
+
         spl = data.split()
         command = spl[0]
         value = int(spl[1])

@@ -74,9 +74,7 @@ class BST:
                 return 0
 
             if node.data <= data:
-                count = 1 + \
-                    self.count_if_less_than_or_eq(
-                        node.left, data) + self.count_if_less_than_or_eq(node.right, data)
+                count = 1 + self.count_if_less_than_or_eq(node.left, data) + self.count_if_less_than_or_eq(node.right, data)
 
             else:
                 count = self.count_if_less_than_or_eq(node.left, data)

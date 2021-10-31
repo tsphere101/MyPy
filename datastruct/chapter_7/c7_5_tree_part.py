@@ -34,13 +34,10 @@ class BST:
         return
 
     def search(self, data, node=None):
-
         if not self.root:
             raise ValueError(f"{data} is not contained in tree.")
-
         if node is None:
             node = self.root
-
         if data == node.data:
             return node
         elif data < node.data:
@@ -54,21 +51,6 @@ class BST:
             else:
                 raise ValueError(f"{data} is not contained in tree.")
 
-        if self.root:
-            if node is None:
-                node = self.root
-
-            if data == node.data:
-                return node
-
-            if data < node.data:
-                return self.search(data, node.left)
-
-            if data > node.data:
-                return self.search(data, node.right)
-
-        else:
-            return None
 
     def checkpos(self, data):
         try:
@@ -94,6 +76,7 @@ class BST:
 
 if __name__ == "__main__":
     T = BST()
+
     inp = [int(i) for i in input('Enter Input : ').split()]
     for i in range(1, len(inp)):
         root = T.insert(inp[i])
