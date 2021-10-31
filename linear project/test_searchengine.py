@@ -1,7 +1,7 @@
-from SearchEngine import *
+import SearchEngine as sng
 import time
 if __name__ == "__main__":
-    se = SearchEngine("zen_record.txt")
+    se = sng.SearchEngine("zen_record.txt")
 
     while True:
         kw = input("Search : ")
