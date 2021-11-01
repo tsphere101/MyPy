@@ -37,8 +37,41 @@ class AVL:
             node.right = self._insert(data, pos, node.right)
             return node
 
+        bf = self.balance_factor(node)
+        if bf > 0:
+            node.right = self._insert(node.right)
+            return node
+
+
         node.left = self._insert(data, pos, node.left)
         return node
+
+    def balance_factor(self,node):
+    
+        if node.left:
+            hl = self.height(node.left)
+        else :
+            hl = 0
+        
+        if node.right:
+            hr = self.height(node.right)
+        else:
+            hr = 0
+
+        return hl-hr
+
+    def height(self,node):
+        if node.left:
+            hl = self.height(node.left)
+        else:
+            hl = 0
+
+        if node.right :
+            hr = self.height(node.right)
+        else:
+            hr = 0
+
+        return 1+max(hl,hr)
 
     def search_for_pos(self, pos, node=None):
         if node is None:
