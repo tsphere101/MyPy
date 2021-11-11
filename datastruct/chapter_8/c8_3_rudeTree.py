@@ -4,7 +4,7 @@ class Node:
         self.left = None
         self.right = None
 
-    def is_leaf(self):
+    def isLeaf(self):
         return not self.left and not self.right
 
     def __str__(self):
