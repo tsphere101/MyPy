@@ -15,12 +15,26 @@ class HashTable:
         self.max_collision = max_collision
         self.table = [None for _ in range(self.table_size)]
         self.rehash_threshold = float(rehash_threshold)
+        
+    def add_bundle(self,data):
+        self.bundle = data
+        for d in data:
+            print("Add :",d)
+            d = Data(d,d)
+            H.add(d)
+            H.print()
+            print("----------------------------------------")
+        
 
     def add(self, data):
         # Check if reached the threshold
         thd = self.table_size*self.rehash_threshold/100
         if self.length+1 > thd:
-            self = self.rehash()
+            print("****** Data over threshold - Rehash !!! ******")
+            new_table = self.rehash()
+            self.table= new_table.table
+            self.table_size = new_table.table_size
+            self.length = new_table.length
 
         key_index = self._get_hash(data.key)
 
@@ -41,7 +55,7 @@ class HashTable:
 
                 print("collision number", j, "at", new_key)
             # Discard
-            print("Max of collisionChain")
+            print("****** Max collision - Rehash !!! ******")
             new_table = self.rehash()
             new_table.add(data)
             self.table = new_table.table
@@ -50,10 +64,12 @@ class HashTable:
             return
 
     def rehash(self):
-        print("R")
+        # print("R")
         extended_size = self.nextPrime(self.table_size*2)
         new_table = HashTable(extended_size,self.max_collision,self.rehash_threshold)
-        for data in self:
+            
+        for i in range(self.length) :
+            data = self.bundle[i]
             new_table.add(Data(data,data))
 
         return new_table
@@ -116,13 +132,8 @@ if __name__ == "__main__":
     data = [int(x) for x in data.split()]
 
     H = HashTable(int(table_size),int(max_collision),float(threshold))
-    print("Initial Table : ")
+    print("Initial Table :")
     H.print()
+    print("----------------------------------------")
 
-    for d in data:
-        print("Add :",d)
-        d = Data(d,d)
-        H.add(d)
-        H.print()
-        print("----------------------------------------")
-    
+    H.add_bundle(data)
