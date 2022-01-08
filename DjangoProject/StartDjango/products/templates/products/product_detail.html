@@ -1,0 +1,13 @@
+<h1>
+    Item
+</h1>
+
+<p>
+    {%if object.title is not None and object.title != ''%} Name : {{ object.title }} {%else%}Untitled{% endif %}
+</p>
+<p>
+    Description : {{object.description}}
+</p>
+<p>
+    Price : {{object.price}}
+</p>
